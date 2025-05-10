@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="1" author="Oleksandra Bulhakova">
+        <createTable tableName="technologies">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="name" tableName="technologies" constraintName="unique_technology_name"/>
+    </changeSet>
+
+    <changeSet id="2" author="Oleksandra Bulhakova">
+        <createTable tableName="clients">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registration_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="Oleksandra Bulhakova">
+        <createTable tableName="companies">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registration_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="Oleksandra Bulhakova">
+        <createTable tableName="contacts">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ownable_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="Oleksandra Bulhakova">
+        <createTable tableName="addresses">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="country" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(255)"/>
+            <column name="street" type="VARCHAR(255)"/>
+            <column name="building" type="VARCHAR(255)"/>
+            <column name="apartment" type="VARCHAR(255)"/>
+            <column name="ownable_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="Oleksandra Bulhakova">
+        <createTable tableName="candidates">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="registration_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="candidates"
+                baseColumnNames="company_id"
+                constraintName="fk_candidates_company"
+                referencedTableName="companies"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="7" author="Oleksandra Bulhakova">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="role" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registration_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_path" type="VARCHAR(255)"/>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="token" type="VARCHAR(255)"/>
+            <column name="company_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="users"
+                baseColumnNames="company_id"
+                referencedTableName="companies"
+                referencedColumnNames="id"
+                constraintName="fk_users_company"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="8" author="Oleksandra Bulhakova">
+        <createTable tableName="attachments">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="attachment_path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="candidate_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="attachments"
+                baseColumnNames="candidate_id"
+                constraintName="fk_attachments_candidate"
+                referencedTableName="candidates"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="9" author="Oleksandra Bulhakova">
+        <createTable tableName="comments">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="comments"
+                baseColumnNames="user_id"
+                constraintName="fk_comments_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="comments"
+                baseColumnNames="candidate_id"
+                constraintName="fk_comments_candidate"
+                referencedTableName="candidates"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="10" author="Oleksandra Bulhakova">
+        <createTable tableName="vacancies">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="close_date" type="DATE"/>
+            <column name="description" type="VARCHAR(1024)"/>
+            <column name="status" type="VARCHAR(50)"/>
+            <column name="company_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="vacancies"
+                baseColumnNames="client_id"
+                constraintName="fk_vacancies_client"
+                referencedTableName="clients"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="vacancies"
+                baseColumnNames="company_id"
+                referencedTableName="companies"
+                referencedColumnNames="id"
+                constraintName="fk_vacancies_company"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="11" author="Oleksandra Bulhakova">
+        <createTable tableName="appointments">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+            <column name="candidate_id" type="BIGINT"/>
+            <column name="vacancy_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="appointments"
+                baseColumnNames="user_id"
+                constraintName="fk_appointments_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="appointments"
+                baseColumnNames="candidate_id"
+                constraintName="fk_appointments_candidate"
+                referencedTableName="candidates"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="appointments"
+                baseColumnNames="vacancy_id"
+                constraintName="fk_appointments_vacancy"
+                referencedTableName="vacancies"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="12" author="Oleksandra Bulhakova">
+        <createTable tableName="vacancy_candidate">
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vacancy_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="vacancy_candidate"
+                columnNames="candidate_id, vacancy_id"
+                constraintName="pk_candidate_vacancy"/>
+
+        <addForeignKeyConstraint
+                baseTableName="vacancy_candidate"
+                baseColumnNames="candidate_id"
+                constraintName="fk_vacancy_candidate_candidate"
+                referencedTableName="candidates"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="vacancy_candidate"
+                baseColumnNames="vacancy_id"
+                constraintName="fk_vacancy_candidate_vacancy"
+                referencedTableName="vacancies"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="13" author="Oleksandra Bulhakova">
+        <createTable tableName="vacancy_technology">
+            <column name="vacancy_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technology_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="vacancy_technology"
+                columnNames="vacancy_id, technology_id"
+                constraintName="pk_vacancy_technology"/>
+
+        <addForeignKeyConstraint
+                baseTableName="vacancy_technology"
+                baseColumnNames="vacancy_id"
+                referencedTableName="vacancies"
+                referencedColumnNames="id"
+                constraintName="fk_vacancy_technology_vacancy"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="vacancy_technology"
+                baseColumnNames="technology_id"
+                referencedTableName="technologies"
+                referencedColumnNames="id"
+                constraintName="fk_vacancy_technology_technology"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="14" author="Oleksandra Bulhakova">
+        <createTable tableName="candidate_technology">
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technology_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="candidate_technology"
+                columnNames="candidate_id, technology_id"
+                constraintName="pk_candidate_technology"/>
+
+        <addForeignKeyConstraint
+                baseTableName="candidate_technology"
+                baseColumnNames="candidate_id"
+                constraintName="fk_candidate_technology_candidate"
+                referencedTableName="candidates"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="candidate_technology"
+                baseColumnNames="technology_id"
+                constraintName="fk_candidate_technology_technology"
+                referencedTableName="technologies"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="15" author="Oleksandra Bulhakova">
+        <createTable tableName="vacancy_user">
+            <column name="vacancy_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="vacancy_user"
+                columnNames="vacancy_id, user_id"
+                constraintName="pk_vacancy_user"/>
+
+        <addForeignKeyConstraint
+                baseTableName="vacancy_user"
+                baseColumnNames="vacancy_id"
+                referencedTableName="vacancies"
+                referencedColumnNames="id"
+                constraintName="fk_vacancy_user_vacancy"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="vacancy_user"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_vacancy_user_user"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>
