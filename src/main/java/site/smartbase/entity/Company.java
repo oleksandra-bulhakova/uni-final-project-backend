@@ -31,4 +31,7 @@ public class Company {
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vacancy> vacancies;
+
+    @OneToMany(mappedBy = "company")
+    private List<Client> clients;
 }

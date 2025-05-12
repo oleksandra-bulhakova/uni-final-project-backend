@@ -25,4 +25,8 @@ public class Client {
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vacancy> vacancies;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 }
