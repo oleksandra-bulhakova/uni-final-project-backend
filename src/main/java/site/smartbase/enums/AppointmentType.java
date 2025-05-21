@@ -4,5 +4,6 @@ public enum AppointmentType {
     PRESCREEN,
     INTERVIEW,
     ENGLISH_CHECK,
+    OFFER,
     HIRING
 }

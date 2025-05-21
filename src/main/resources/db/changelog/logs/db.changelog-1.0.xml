@@ -189,7 +189,7 @@
                 constraintName="fk_comments_user"
                 referencedTableName="users"
                 referencedColumnNames="id"
-                onDelete="CASCADE"/>
+                onDelete="SET NULL"/>
 
         <addForeignKeyConstraint
                 baseTableName="comments"
@@ -264,7 +264,7 @@
                 constraintName="fk_appointments_user"
                 referencedTableName="users"
                 referencedColumnNames="id"
-                onDelete="CASCADE"/>
+                onDelete="SET NULL"/>
 
         <addForeignKeyConstraint
                 baseTableName="appointments"
@@ -280,7 +280,7 @@
                 constraintName="fk_appointments_vacancy"
                 referencedTableName="vacancies"
                 referencedColumnNames="id"
-                onDelete="CASCADE"/>
+                onDelete="SET NULL"/>
     </changeSet>
 
     <changeSet id="12" author="Oleksandra Bulhakova">
