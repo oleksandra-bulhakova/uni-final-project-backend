@@ -35,6 +35,8 @@ public class User {
 
     private String token;
 
+    private String password;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
