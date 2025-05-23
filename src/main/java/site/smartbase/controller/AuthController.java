@@ -2,10 +2,8 @@ package site.smartbase.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 import site.smartbase.dto.CompanyRegistrationRequest;
 import site.smartbase.dto.LoginRequest;
 import site.smartbase.service.RegistrationService;
@@ -25,5 +23,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(registrationService.login(request.getEmail(), request.getPassword()));
+    }
+
+    @GetMapping("/confirm")
+    public RedirectView confirm(@RequestParam("token") String token) {
+        registrationService.confirmRegistration(token);
+        return new RedirectView("http://localhost:3000/login");
     }
 }

@@ -1,6 +1,7 @@
 package site.smartbase.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +12,15 @@ import site.smartbase.entity.User;
 import site.smartbase.enums.ContactType;
 import site.smartbase.enums.OwnableType;
 import site.smartbase.enums.UserRole;
+import site.smartbase.exception.NotActivatedException;
 import site.smartbase.exception.NotFoundException;
+import site.smartbase.exception.NotValidToken;
 import site.smartbase.exception.WrongPasswordException;
 import site.smartbase.repository.CompanyRepo;
 import site.smartbase.repository.ContactRepo;
 import site.smartbase.repository.UserRepo;
+import site.smartbase.service.AuthService;
+import site.smartbase.service.EmailService;
 import site.smartbase.service.RegistrationService;
 
 import java.time.LocalDate;
@@ -29,9 +34,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final ContactRepo contactRepo;
     private final CompanyRepo companyRepo;
     private final PasswordEncoder passwordEncoder;
-    private final AuthServiceImpl jwtUtil;
+    private final AuthService authService;
+    private final EmailService emailService;
 
     @Override
+    @Async
     public void registerFirst(CompanyRegistrationRequest request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("Passwords don't match");
@@ -81,6 +88,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         contactUserPhone.setOwnableType(OwnableType.USER);
         contactUserPhone.setOwnerId(userLeadOfDepartment.getId());
         contactRepo.save(contactUserPhone);
+
+        emailService.sendConfirmationEmail(userLeadOfDepartment.getId());
     }
 
     @Override
@@ -92,10 +101,26 @@ public class RegistrationServiceImpl implements RegistrationService {
         User user = userRepo.findById(emailContact.get().getOwnerId())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
+        if (!user.getActive()) {
+            throw new NotActivatedException("User is not active");
+        }
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new WrongPasswordException("Invalid credentials");
         }
 
-        return jwtUtil.generateToken(email);
+        return authService.generateToken(email);
+    }
+
+    @Transactional
+    @Override
+    public String confirmRegistration(String token) {
+        User user = userRepo.findByToken(token)
+                .orElseThrow(() -> new NotValidToken("Invalid token"));
+
+        user.setActive(true);
+        user.setToken(null);
+
+        return "Your account has been activated. Now you can login";
     }
 }

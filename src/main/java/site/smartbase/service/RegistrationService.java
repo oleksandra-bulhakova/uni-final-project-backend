@@ -6,4 +6,6 @@ public interface RegistrationService {
     void registerFirst(CompanyRegistrationRequest request);
 
     String login(String email, String password);
+
+    String confirmRegistration(String token);
 }
