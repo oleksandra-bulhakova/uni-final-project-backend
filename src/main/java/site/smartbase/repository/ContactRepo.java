@@ -18,4 +18,7 @@ public interface ContactRepo extends JpaRepository<Contact, Long> {
 
     @Query("SELECT c FROM Contact c WHERE c.ownerId =:ownerId AND c.ownableType =:ownableType AND c.type =:contactType")
     Optional<Contact> findByOwnerIdAndOwnableTypeAndContactType(@Param("ownerId") Long ownerId, @Param("ownableType") OwnableType ownableType, @Param("contactType") ContactType contactType);
+
+    @Query("SELECT c.ownerId FROM Contact c WHERE c.contact =:contact AND c.ownableType =:ownableType AND c.type =:contactType")
+    Optional<Long> findOwnerIdByEmail(@Param("contact") String email, @Param("ownableType") OwnableType ownableType, @Param("contactType") ContactType contactType);
 }

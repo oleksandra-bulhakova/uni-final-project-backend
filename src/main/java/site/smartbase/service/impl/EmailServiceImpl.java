@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import site.smartbase.entity.Contact;
 import site.smartbase.entity.User;
 import site.smartbase.enums.ContactType;
@@ -46,7 +45,6 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    @Transactional
     @Override
     public void sendConfirmationEmail(Long userId) {
         String token = UUID.randomUUID().toString();
@@ -98,5 +96,106 @@ public class EmailServiceImpl implements EmailService {
                         .orElseThrow(() -> new NotFoundException("Contact not found"));
 
         send(contact.getContact(), "Підтвердження реєстрації", message);
+    }
+
+    @Override
+    public void sendFinishRegistrationEmail(Long userId) {
+        String token = UUID.randomUUID().toString();
+        User user = userRepo.findById(userId).orElseThrow(
+                () -> new NotFoundException("User not found")
+        );
+        user.setToken(token);
+        String confirmLink = "http://localhost:8081/api/auth/confirm-user-registration?token=" + token;
+
+        String message = """
+        <!DOCTYPE html>
+        <html lang="uk">
+        <head>
+          <meta charset="UTF-8">
+          <title>Завершення реєстрації</title>
+        </head>
+        <body style="margin:0;padding:0;font-family:Arial,sans-serif;background-color:#f6f6f6;">
+          <table align="center" cellpadding="0" cellspacing="0" width="100%%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <tr>
+              <td style="background-color: #fcb03d; padding: 24px; text-align: center;">
+                <h1 style="color: white; margin: 0;">SmartBase</h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 24px; color: #2e2e3a;">
+                <p style="font-size: 16px;">Привіт!</p>
+                <p style="font-size: 16px;">
+                  Вас запрошено доєднатися до <strong>SmartBase</strong>. Щоб продовжити реєстрацію, натисніть кнопку нижче:
+                </p>
+                <div style="text-align: center; margin: 32px 0;">
+                  <a href="%s" style="background-color: #fcb03d; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">Продовжити реєстрацію</a>
+                </div>
+                <p style="font-size: 16px; color: #555;">
+                  Якщо ви не бажаєте реєструватись, просто проігноруйте цей лист.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="background-color: #f6f6f6; text-align: center; padding: 16px; font-size: 12px; color: #999;">
+                © 2025 SmartBase. Усі права захищено.
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+        """.formatted(confirmLink);
+
+        Contact contact = contactRepo.findByOwnerIdAndOwnableTypeAndContactType(userId, OwnableType.USER, ContactType.MAIN_EMAIL)
+                .orElseThrow(() -> new NotFoundException("Contact not found"));
+
+        send(contact.getContact(), "Вас запросили доєднатися до SmartBase", message);
+    }
+
+    @Override
+    public void sendResetPasswordEmail(User user, String email) {
+        String token = UUID.randomUUID().toString();
+
+        user.setToken(token);
+        String confirmLink = "http://localhost:8081/api/auth/change-password?token=" + token;
+
+        String message = """
+        <!DOCTYPE html>
+        <html lang="uk">
+        <head>
+          <meta charset="UTF-8">
+          <title>Запит на скидання паролю</title>
+        </head>
+        <body style="margin:0;padding:0;font-family:Arial,sans-serif;background-color:#f6f6f6;">
+          <table align="center" cellpadding="0" cellspacing="0" width="100%%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <tr>
+              <td style="background-color: #fcb03d; padding: 24px; text-align: center;">
+                <h1 style="color: white; margin: 0;">SmartBase</h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 24px; color: #2e2e3a;">
+                <p style="font-size: 16px;">Привіт!</p>
+                <p style="font-size: 16px;">
+                  Для того, щоб скинути пароль, натисніть кнопку нижче:
+                </p>
+                <div style="text-align: center; margin: 32px 0;">
+                  <a href="%s" style="background-color: #fcb03d; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">Скинути пароль</a>
+                </div>
+                <p style="font-size: 16px; color: #555;">
+                  Якщо ви не відправляли запит на скидання паролю, просто проігноруйте цей лист.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="background-color: #f6f6f6; text-align: center; padding: 16px; font-size: 12px; color: #999;">
+                © 2025 SmartBase. Усі права захищено.
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+        """.formatted(confirmLink);
+
+        send(email, "Запит на скидання паролю SmartBase", message);
     }
 }

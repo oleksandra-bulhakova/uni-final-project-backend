@@ -1,8 +1,11 @@
 package site.smartbase.service;
 
-import org.springframework.transaction.annotation.Transactional;
+import site.smartbase.entity.User;
 
 public interface EmailService {
-    @Transactional
     void sendConfirmationEmail(Long userId);
+
+    void sendFinishRegistrationEmail(Long userId);
+
+    void sendResetPasswordEmail(User user, String email);
 }
