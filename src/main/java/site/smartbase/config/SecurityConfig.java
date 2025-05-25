@@ -47,6 +47,12 @@ public class SecurityConfig {
                                 "/error").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/auth/invite").hasAnyRole(String.valueOf(UserRole.OWNER))
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/users/{userId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/files/upload").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                        .requestMatchers(HttpMethod.PUT,
+                                "/api/users/set-image-path/{userId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

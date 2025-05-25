@@ -1,10 +1,7 @@
 package site.smartbase.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 import site.smartbase.entity.User;
 import site.smartbase.enums.ContactType;
@@ -23,6 +20,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtEncoder jwtEncoder;
     private final UserRepo userRepo;
     private final ContactRepo contactRepo;
+    private final JwtDecoder jwtDecoder;
 
     @Override
     public String generateToken(String email) {
@@ -34,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
                 .subject(email)
                 .claim("role", user.getRole())
                 .claim("status", user.getActive().toString())
+                .claim("id", user.getId())
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plus(1, ChronoUnit.HOURS))
                 .build();
@@ -41,5 +40,17 @@ public class AuthServiceImpl implements AuthService {
         JwsHeader jwsHeader = JwsHeader.with(() -> "HS256").build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+    }
+
+    @Override
+    public Long getCurrentUserId(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+        Object idClaim = jwt.getClaim("id");
+
+        if (idClaim == null) {
+            throw new IllegalStateException("Token does not contain user ID");
+        }
+
+        return Long.valueOf(idClaim.toString());
     }
 }
