@@ -48,9 +48,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,
                                 "/api/auth/invite").hasAnyRole(String.valueOf(UserRole.OWNER))
                         .requestMatchers(HttpMethod.GET,
-                                "/api/users/{userId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/users/{userId}",
+                                "/api/clients",
+                                "/api/users",
+                                "/api/technologies",
+                                "/api/vacancies").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.POST,
-                                "/api/files/upload").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/files/upload",
+                                "/api/clients",
+                                "/api/vacancies").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/users/set-image-path/{userId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .anyRequest().authenticated()

@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
 import site.smartbase.dto.AddressResponse;
+import site.smartbase.dto.ClientResponse;
 import site.smartbase.dto.ContactResponse;
-import site.smartbase.dto.UserResponse;
 import site.smartbase.dto.VacancyListResponse;
 import site.smartbase.entity.Address;
+import site.smartbase.entity.Client;
 import site.smartbase.entity.Contact;
-import site.smartbase.entity.User;
 import site.smartbase.entity.Vacancy;
 import site.smartbase.enums.OwnableType;
 import site.smartbase.repository.AddressRepo;
@@ -20,14 +20,14 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class UserResponseMapper extends AbstractConverter<User, UserResponse> {
+public class ClientResponseMapper extends AbstractConverter<Client, ClientResponse> {
     private final AddressRepo addressRepo;
     private final ContactRepo contactRepo;
     private final VacancyRepo vacancyRepo;
 
     @Override
-    protected UserResponse convert(User user) {
-        List<Address> address = addressRepo.findByOwnerIdAndOwnableType(user.getId(), OwnableType.USER);
+    protected ClientResponse convert(Client client) {
+        List<Address> address = addressRepo.findByOwnerIdAndOwnableType(client.getId(), OwnableType.CLIENT);
 
         AddressResponse addressResponse = null;
 
@@ -41,7 +41,7 @@ public class UserResponseMapper extends AbstractConverter<User, UserResponse> {
                     .build();
         }
 
-        List<Contact> contacts = contactRepo.findByOwnerIdAndOwnableType(user.getId(), OwnableType.USER);
+        List<Contact> contacts = contactRepo.findByOwnerIdAndOwnableType(client.getId(), OwnableType.CLIENT);
         List<ContactResponse> contactResponses = null;
 
         if (contacts != null) {
@@ -54,7 +54,7 @@ public class UserResponseMapper extends AbstractConverter<User, UserResponse> {
                     .toList();
         }
 
-        List<Vacancy> vacancies = vacancyRepo.findByUsers_Id(user.getId());
+        List<Vacancy> vacancies = vacancyRepo.findByClient_Id(client.getId());
         List<VacancyListResponse> vacancyListResponses = null;
 
         if (vacancies != null) {
@@ -65,17 +65,13 @@ public class UserResponseMapper extends AbstractConverter<User, UserResponse> {
                             .build()).toList();
         }
 
-        return UserResponse.builder()
-                .id(user.getId())
-                .address(addressResponse)
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .userRole(user.getRole())
-                .imagePath(user.getImagePath())
-                .contacts(contactResponses)
+        return ClientResponse.builder()
+                .id(client.getId())
+                .name(client.getName())
+                .registrationDate(client.getRegistrationDate())
                 .vacancies(vacancyListResponses)
-                .dateOfRegistration(user.getRegistrationDate())
-                .active(user.getActive())
+                .address(addressResponse)
+                .contacts(contactResponses)
                 .build();
     }
 }

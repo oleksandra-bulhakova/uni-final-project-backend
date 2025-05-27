@@ -10,4 +10,8 @@ import java.util.List;
 @Repository
 public interface VacancyRepo extends JpaRepository<Vacancy, Long> {
     List<Vacancy> findByUsers_Id(Long userId);
+
+    List<Vacancy> findByClient_Id(Long companyId);
+
+    List<Vacancy> findAllByCompany_Id(Long companyId);
 }

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import site.smartbase.enums.UserRole;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,15 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
+public class ClientResponse {
     private Long id;
-    private String firstName;
-    private String lastName;
-    private UserRole userRole;
+    private String name;
+    private LocalDate registrationDate;
+    private List<VacancyListResponse> vacancies;
     private List<ContactResponse> contacts;
     private AddressResponse address;
-    private List<VacancyListResponse> vacancies;
-    private String imagePath;
-    private LocalDate dateOfRegistration;
-    private boolean active;
 }
