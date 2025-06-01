@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 import site.smartbase.exception.AzureException;
 import site.smartbase.service.AzureBlobService;
+import com.azure.storage.blob.models.BlobHttpHeaders;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -39,6 +40,9 @@ public class AzureBlobServiceImpl implements AzureBlobService {
             BlobClient blobClient = containerClient.getBlobClient(fileName);
 
             blobClient.upload(file.getInputStream(), file.getSize(), true);
+            BlobHttpHeaders headers = new BlobHttpHeaders()
+                    .setContentType(file.getContentType());
+            blobClient.setHttpHeaders(headers);
 
             return blobClient.getBlobUrl();
         } catch (IOException e) {

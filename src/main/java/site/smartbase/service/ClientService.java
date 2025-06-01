@@ -9,4 +9,6 @@ public interface ClientService {
     ClientResponse addClient(Long currentUserId, ClientRequest clientRequest);
 
     List<ClientResponse> getAllClients(Long currentUserId);
+
+    ClientResponse getClientById(Long clientId);
 }

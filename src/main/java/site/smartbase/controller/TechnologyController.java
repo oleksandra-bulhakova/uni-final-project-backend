@@ -2,9 +2,7 @@ package site.smartbase.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.smartbase.dto.TechnologyDto;
 import site.smartbase.service.TechnologyService;
 
@@ -19,5 +17,11 @@ public class TechnologyController {
     @GetMapping
     public ResponseEntity<List<TechnologyDto>> getAllTechnologies() {
         return ResponseEntity.ok(technologyService.getAllTechnologies());
+    }
+
+    @PutMapping("/{candidateId}")
+    public ResponseEntity<List<TechnologyDto>> updateTechnology(@PathVariable("candidateId") Long candidateId,
+                                                          @RequestBody List<TechnologyDto> technologies) {
+        return ResponseEntity.ok(technologyService.addTechnologiesToCandidate(technologies, candidateId));
     }
 }

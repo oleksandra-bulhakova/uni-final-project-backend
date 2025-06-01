@@ -10,4 +10,6 @@ public interface TechnologyService {
     List<TechnologyDto> getAllTechnologies();
 
     List<TechnologyDto> getAllTechnologiesForVacancy(Long vacancyId);
+
+    List<TechnologyDto> addTechnologiesToCandidate(List<TechnologyDto> technologies, Long candidateId);
 }

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface TechnologyRepo extends JpaRepository<Technology, Long> {
     List<Technology> findByVacancies_Id(Long id);
+
+    List<Technology> findByCandidates_Id(Long id);
 }

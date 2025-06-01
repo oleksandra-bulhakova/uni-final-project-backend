@@ -26,4 +26,14 @@ public class VacancyController {
     public ResponseEntity<List<VacancyDto>> getAllVacancies(@CurrentUserId Long currentUserId) {
         return ResponseEntity.ok(vacancyService.getAllVacancies(currentUserId));
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<VacancyDto>> getAllVacanciesForUser(@CurrentUserId Long currentUserId) {
+        return ResponseEntity.ok(vacancyService.getAllVacanciesForUser(currentUserId));
+    }
+
+    @GetMapping("/{vacancyId}")
+    public ResponseEntity<VacancyDto> getVacancyById(@PathVariable Long vacancyId) {
+        return ResponseEntity.ok(vacancyService.getVacancy(vacancyId));
+    }
 }

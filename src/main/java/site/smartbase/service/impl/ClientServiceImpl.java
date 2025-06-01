@@ -72,4 +72,9 @@ public class ClientServiceImpl implements ClientService {
         }
         return clientResponses;
     }
+
+    @Override
+    public ClientResponse getClientById(Long clientId) {
+        return modelMapper.map(clientRepo.findById(clientId), ClientResponse.class);
+    }
 }

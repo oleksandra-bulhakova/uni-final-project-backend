@@ -3,7 +3,6 @@ package site.smartbase.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import site.smartbase.annotations.CurrentUserId;
 import site.smartbase.dto.ClientRequest;
@@ -26,5 +25,10 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<List<ClientResponse>> getClients(@CurrentUserId Long currentUserId) {
         return ResponseEntity.ok(clientService.getAllClients(currentUserId));
+    }
+
+    @GetMapping("/{clientId}")
+    public ResponseEntity<ClientResponse> getClient(@PathVariable Long clientId) {
+        return ResponseEntity.ok(clientService.getClientById(clientId));
     }
 }

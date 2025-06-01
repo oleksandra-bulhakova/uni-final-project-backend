@@ -52,13 +52,22 @@ public class SecurityConfig {
                                 "/api/clients",
                                 "/api/users",
                                 "/api/technologies",
-                                "/api/vacancies").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/vacancies",
+                                "/api/vacancies/user",
+                                "/api/vacancies/{vacancyId}",
+                                "/api/clients/{clientId}",
+                                "/api/candidates",
+                                "/api/candidates/{candidateId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.POST,
                                 "/api/files/upload",
                                 "/api/clients",
-                                "/api/vacancies").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/vacancies",
+                                "/api/address",
+                                "/api/candidates",
+                                "/api/attachments/{candidateId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.PUT,
-                                "/api/users/set-image-path/{userId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/users/set-image-path/{userId}",
+                                "/api/technologies/{candidateId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

@@ -87,4 +87,25 @@ public class VacancyServiceImpl implements VacancyService {
         }
         return vacancyDtos;
     }
+
+    @Override
+    public List<VacancyDto> getAllVacanciesForUser(Long currentUserId) {
+        User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        List<Vacancy> vacancies = vacancyRepo.findByUsers_Id(currentUserId);
+        List<VacancyDto> vacancyDtos = new ArrayList<>();
+
+        if (vacancies != null) {
+            vacancyDtos = vacancies.stream().map(
+                            vacancy -> modelMapper.map(vacancy, VacancyDto.class))
+                    .toList();
+        }
+        return vacancyDtos;
+    }
+
+    @Override
+    public VacancyDto getVacancy(Long vacancyId) {
+        Vacancy vacancy = vacancyRepo.findById(vacancyId).orElseThrow(() -> new NotFoundException("Vacancy not found"));
+        return modelMapper.map(vacancy, VacancyDto.class);
+    }
 }

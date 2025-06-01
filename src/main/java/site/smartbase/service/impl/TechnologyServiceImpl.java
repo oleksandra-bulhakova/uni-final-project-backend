@@ -2,9 +2,12 @@ package site.smartbase.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.smartbase.dto.TechnologyDto;
+import site.smartbase.entity.Candidate;
 import site.smartbase.entity.Technology;
 import site.smartbase.exception.NotFoundException;
+import site.smartbase.repository.CandidateRepo;
 import site.smartbase.repository.TechnologyRepo;
 import site.smartbase.service.TechnologyService;
 
@@ -15,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TechnologyServiceImpl implements TechnologyService {
     private final TechnologyRepo technologyRepo;
+    private final CandidateRepo candidateRepo;
 
     @Override
     public TechnologyDto getTechnology(Long technologyId) {
@@ -52,5 +56,35 @@ public class TechnologyServiceImpl implements TechnologyService {
                             .build()).toList();
         }
         return technologiesDto;
+    }
+
+    @Override
+    @Transactional
+    public List<TechnologyDto> addTechnologiesToCandidate(List<TechnologyDto> technologies, Long candidateId) {
+        Candidate candidate = candidateRepo.findById(candidateId).orElseThrow(() -> new NotFoundException("Candidate not found"));
+
+        List<Long> incomingIds = technologies.stream()
+                .map(TechnologyDto::getId)
+                .toList();
+
+        candidate.getTechnologies().removeIf(tech -> !incomingIds.contains(tech.getId()));
+
+        for (TechnologyDto dto : technologies) {
+            boolean alreadyPresent = candidate.getTechnologies().stream()
+                    .anyMatch(existing -> existing.getId().equals(dto.getId()));
+            if (!alreadyPresent) {
+                Technology tech = Technology.builder()
+                        .id(dto.getId())
+                        .name(dto.getName())
+                        .build();
+                candidate.getTechnologies().add(tech);
+            }
+        }
+
+        return candidate.getTechnologies().stream().map(
+                technology -> TechnologyDto.builder()
+                        .name(technology.getName())
+                        .id(technology.getId())
+                        .build()).toList();
     }
 }

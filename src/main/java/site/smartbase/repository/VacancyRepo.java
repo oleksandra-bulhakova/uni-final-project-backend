@@ -14,4 +14,6 @@ public interface VacancyRepo extends JpaRepository<Vacancy, Long> {
     List<Vacancy> findByClient_Id(Long companyId);
 
     List<Vacancy> findAllByCompany_Id(Long companyId);
+
+    List<Vacancy> findByCandidates_Id(Long candidateId);
 }
