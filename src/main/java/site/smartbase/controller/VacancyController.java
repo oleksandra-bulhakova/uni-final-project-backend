@@ -36,4 +36,9 @@ public class VacancyController {
     public ResponseEntity<VacancyDto> getVacancyById(@PathVariable Long vacancyId) {
         return ResponseEntity.ok(vacancyService.getVacancy(vacancyId));
     }
+
+    @GetMapping("/candidate/{candidateId}")
+    public ResponseEntity<List<VacancyDto>> getVacanciesByCandidateId(@PathVariable Long candidateId) {
+        return ResponseEntity.ok(vacancyService.getVacanciesForCandidate(candidateId));
+    }
 }

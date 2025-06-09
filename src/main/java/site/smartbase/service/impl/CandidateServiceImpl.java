@@ -4,16 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.smartbase.dto.CandidateCreationDto;
-import site.smartbase.dto.CandidateResponse;
+import site.smartbase.dto.*;
 import site.smartbase.entity.*;
 import site.smartbase.enums.ContactType;
 import site.smartbase.enums.OwnableType;
 import site.smartbase.exception.NotFoundException;
-import site.smartbase.repository.CandidateRepo;
-import site.smartbase.repository.CompanyRepo;
-import site.smartbase.repository.ContactRepo;
-import site.smartbase.repository.UserRepo;
+import site.smartbase.repository.*;
 import site.smartbase.service.CandidateService;
 
 import java.time.LocalDate;
@@ -28,6 +24,8 @@ public class CandidateServiceImpl implements CandidateService {
     private final ModelMapper modelMapper;
     private final CompanyRepo companyRepo;
     private final UserRepo userRepo;
+    private final VacancyRepo vacancyRepo;
+    private final CommentRepo commentRepo;
 
     @Transactional
     @Override
@@ -107,5 +105,60 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public CandidateResponse getCandidate(Long candidateId) {
         return modelMapper.map(candidateRepo.findById(candidateId), CandidateResponse.class);
+    }
+
+    @Transactional
+    @Override
+    public CandidateResponse updateCandidate(CandidateUpdateDto candidateUpdateDto, Long candidateId) {
+        candidateUpdateDto.setId(candidateId);
+        return modelMapper.map(candidateRepo.save(modelMapper.map(candidateUpdateDto, Candidate.class)), CandidateResponse.class);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCandidate(Long candidateId) {
+        candidateRepo.deleteById(candidateId);
+    }
+
+    @Transactional
+    @Override
+    public CandidateResponse addCandidateToVacancy(Long candidateId, Long vacancyId, Long currentUserId) {
+        Vacancy vacancy = vacancyRepo.findById(vacancyId).orElseThrow(() -> new NotFoundException("Vacancy not found with id: " + vacancyId));
+        Candidate candidate = candidateRepo.findById(candidateId).orElseThrow(() -> new NotFoundException("Candidate not found"));
+        User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        vacancy.getCandidates().add(candidate);
+        vacancy.getUsers().add(user);
+
+        candidate.getVacancies().add(vacancy);
+
+        vacancyRepo.save(vacancy);
+
+        Comment comment = new Comment();
+        comment.setDate(LocalDate.now());
+        comment.setAddressee(candidate);
+        comment.setAuthor(user);
+        comment.setDescription("Кандидата додано до вакансії " + vacancy.getName());
+        commentRepo.save(comment);
+
+        return modelMapper.map(candidate, CandidateResponse.class);
+    }
+
+    @Transactional
+    @Override
+    public CandidateResponse addCommentToCandidate(Long currentUserId, Long candidateId, CommentRequest commentRequest) {
+        Candidate candidate = candidateRepo.findById(candidateId).orElseThrow(() -> new NotFoundException("Candidate not found"));
+        User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        Comment comment = new Comment();
+        comment.setDate(LocalDate.now());
+        comment.setAddressee(candidate);
+        comment.setAuthor(user);
+        comment.setDescription(commentRequest.getDescription());
+        commentRepo.save(comment);
+
+        candidate.getComments().add(comment);
+
+        return modelMapper.map(comment, CandidateResponse.class);
     }
 }

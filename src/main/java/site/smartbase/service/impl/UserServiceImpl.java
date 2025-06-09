@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.smartbase.dto.UserEditRequest;
 import site.smartbase.dto.UserResponse;
 import site.smartbase.entity.Company;
 import site.smartbase.entity.User;
@@ -52,5 +53,24 @@ public class UserServiceImpl implements UserService {
                     .map(user -> modelMapper.map(user, UserResponse.class)).toList();
         }
         return userResponses;
+    }
+
+    @Transactional
+    @Override
+    public UserResponse updateUser(Long userId, UserEditRequest userEditRequest) {
+        User user = userRepo.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        user.setFirstName(userEditRequest.getFirstName());
+        user.setLastName(userEditRequest.getLastName());
+
+        return modelMapper.map(userRepo.save(user), UserResponse.class);
+    }
+
+    @Transactional
+    @Override
+    public void setStatus(Long userId, Boolean status) {
+        User user = userRepo.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        user.setActive(status);
     }
 }

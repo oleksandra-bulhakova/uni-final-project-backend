@@ -1,11 +1,12 @@
 package site.smartbase.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import site.smartbase.enums.AppointmentStatus;
 import site.smartbase.enums.AppointmentType;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +24,8 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentType type;
 
-    private LocalDate date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "Europe/Kyiv")
+    private OffsetDateTime date;
 
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;

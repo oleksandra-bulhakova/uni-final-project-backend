@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentRequest {
-    private String description;
+public class CandidateUpdateDto {
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String source;
 }

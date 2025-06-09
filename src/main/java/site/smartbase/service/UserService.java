@@ -1,6 +1,7 @@
 package site.smartbase.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import site.smartbase.dto.UserEditRequest;
 import site.smartbase.dto.UserResponse;
 
 import java.util.List;
@@ -12,4 +13,10 @@ public interface UserService {
     void setUserImage(Long userId, String userImage);
 
     List<UserResponse> getAllUsers(Long currentUserId);
+
+    @Transactional
+    UserResponse updateUser(Long userId, UserEditRequest userEditRequest);
+
+    @Transactional
+    void setStatus(Long userId, Boolean status);
 }

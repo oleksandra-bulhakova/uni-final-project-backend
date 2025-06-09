@@ -8,6 +8,7 @@ import site.smartbase.entity.*;
 import site.smartbase.enums.OwnableType;
 import site.smartbase.repository.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -27,6 +28,7 @@ public class CandidateResponseMapper extends AbstractConverter<Candidate, Candid
 
         if (address != null && !address.isEmpty() && address.getFirst() != null) {
             addressResponse = AddressResponse.builder()
+                    .id(address.getFirst().getId())
                     .country(address.getFirst().getCountry())
                     .city(address.getFirst().getCity())
                     .street(address.getFirst().getStreet())
@@ -73,7 +75,9 @@ public class CandidateResponseMapper extends AbstractConverter<Candidate, Candid
         List<Comment> comments = commentRepo.findByAddressee_Id(candidate.getId());
         List<CommentResponse> commentResponses = null;
         if (comments != null) {
-            commentResponses = comments.stream().map(comment -> CommentResponse.builder()
+            commentResponses = comments.stream()
+                    .sorted(Comparator.comparing(Comment::getDate).reversed())
+                    .map(comment -> CommentResponse.builder()
                     .id(comment.getId())
                     .date(comment.getDate())
                     .author(UserResponse.builder()

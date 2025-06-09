@@ -23,7 +23,7 @@ public class VacancyDtoMapper extends AbstractConverter<Vacancy, VacancyDto> {
                                 .name(technology.getName())
                                 .build()).toList() : null;
 
-        List<VacancyStatusCount> vacancyStatusCount = appointmentRepo.countByVacancyAndStatusForVacancy(vacancy.getId());
+        List<VacancyStatusCount> vacancyStatusCount = appointmentRepo.countByVacancyAndTypeForVacancy(vacancy.getId());
 
         ClientResponse clientResponse = ClientResponse.builder()
                 .id(vacancy.getClient().getId())

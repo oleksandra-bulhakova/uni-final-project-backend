@@ -19,4 +19,16 @@
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"/>
     </changeSet>
+
+    <changeSet id="17" author="Oleksandra Bulhakova">
+        <modifyDataType tableName="appointments"
+                        columnName="date"
+                        newDataType="TIMESTAMP"/>
+    </changeSet>
+
+    <changeSet id="18" author="Oleksandra Bulhakova">
+        <modifyDataType tableName="appointments"
+                        columnName="date"
+                        newDataType="JAVA.SQL.TYPES.TIMESTAMP_WITH_TIMEZONE"/>
+    </changeSet>
 </databaseChangeLog>

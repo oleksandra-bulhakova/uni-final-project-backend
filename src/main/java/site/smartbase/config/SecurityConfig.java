@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +23,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -57,17 +59,35 @@ public class SecurityConfig {
                                 "/api/vacancies/{vacancyId}",
                                 "/api/clients/{clientId}",
                                 "/api/candidates",
-                                "/api/candidates/{candidateId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/candidates/{candidateId}",
+                                "/api/candidates/appointment/{candidateId}",
+                                "/api/vacancies/candidate/{candidateId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.POST,
                                 "/api/files/upload",
                                 "/api/clients",
                                 "/api/vacancies",
                                 "/api/address",
                                 "/api/candidates",
-                                "/api/attachments/{candidateId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/attachments/{candidateId}",
+                                "/api/contact/{ownerId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/users/set-image-path/{userId}",
-                                "/api/technologies/{candidateId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/technologies/{candidateId}",
+                                "/api/address",
+                                "/api/candidates/{candidateId}",
+                                "/api/users/{userId}",
+                                "/api/users/status/{userId}",
+                                "/api/contact/{ownerId}",
+                                "/api/candidates/{candidateId}/{vacancyId}",
+                                "/api/candidates/comment/{candidateId}",
+                                "/api/candidates/appointment/{candidateId}/{vacancyId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                        .requestMatchers(HttpMethod.DELETE,
+                                "/api/address/{addressId}",
+                                "/api/contact/{contactId}",
+                                "/api/candidates/{candidateId}",
+                                "/api/clients/{clientId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                        .requestMatchers(HttpMethod.PUT,
+                                "/api/users/status/{userId}").hasAnyRole(String.valueOf(UserRole.OWNER))
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

@@ -1,5 +1,6 @@
 package site.smartbase.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import site.smartbase.dto.ClientRequest;
 import site.smartbase.dto.ClientResponse;
 
@@ -11,4 +12,7 @@ public interface ClientService {
     List<ClientResponse> getAllClients(Long currentUserId);
 
     ClientResponse getClientById(Long clientId);
+
+    @Transactional
+    void deleteClient(Long clientId);
 }

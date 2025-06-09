@@ -14,4 +14,6 @@ public interface VacancyService {
     List<VacancyDto> getAllVacanciesForUser(Long currentUserId);
 
     VacancyDto getVacancy(Long vacancyId);
+
+    List<VacancyDto> getVacanciesForCandidate(Long candidateId);
 }

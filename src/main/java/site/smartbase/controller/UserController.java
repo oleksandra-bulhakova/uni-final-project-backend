@@ -2,8 +2,10 @@ package site.smartbase.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.smartbase.annotations.CurrentUserId;
+import site.smartbase.dto.UserEditRequest;
 import site.smartbase.dto.UserResponse;
 import site.smartbase.service.UserService;
 
@@ -30,5 +32,17 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserResponse>> getUsers(@CurrentUserId Long currentUserId) {
         return ResponseEntity.ok(userService.getAllUsers(currentUserId));
+    }
+
+    @PutMapping("/{userId}")
+    @PreAuthorize("@securityUtil.isCurrentUserId(#userId) or hasAuthority('OWNER')")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable("userId") Long userId, @RequestBody UserEditRequest userEditRequest) {
+        return ResponseEntity.ok(userService.updateUser(userId, userEditRequest));
+    }
+
+    @PutMapping("status/{userId}")
+    public ResponseEntity<Void> setStatus(@PathVariable("userId") Long userId, @RequestParam Boolean status) {
+        userService.setStatus(userId, status);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -77,4 +77,10 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponse getClientById(Long clientId) {
         return modelMapper.map(clientRepo.findById(clientId), ClientResponse.class);
     }
+
+    @Transactional
+    @Override
+    public void deleteClient(Long clientId) {
+        clientRepo.deleteById(clientId);
+    }
 }

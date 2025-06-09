@@ -12,12 +12,14 @@ import java.util.List;
 @Repository
 public interface AppointmentRepo extends JpaRepository<Appointment, Long> {
     @Query("""
-                SELECT new site.smartbase.dto.VacancyStatusCount(v.name, a.status, COUNT(a))
+                SELECT new site.smartbase.dto.VacancyStatusCount(v.name, a.type, COUNT(a))
                 FROM Appointment a
                 JOIN Candidate c ON a.participant.id = c.id
                 JOIN c.vacancies v
                 WHERE v.id = :vacancyId
-                GROUP BY v.name, a.status
+                GROUP BY v.name, a.type
             """)
-    List<VacancyStatusCount> countByVacancyAndStatusForVacancy(@Param("vacancyId") Long vacancyId);
+    List<VacancyStatusCount> countByVacancyAndTypeForVacancy(@Param("vacancyId") Long vacancyId);
+
+    List<Appointment> findAllByParticipantId(Long id);
 }

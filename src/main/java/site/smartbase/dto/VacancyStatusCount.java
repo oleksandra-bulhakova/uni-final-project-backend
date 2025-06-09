@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import site.smartbase.enums.AppointmentStatus;
+import site.smartbase.enums.AppointmentType;
 
 @Data
 @AllArgsConstructor
@@ -12,6 +12,6 @@ import site.smartbase.enums.AppointmentStatus;
 @Builder
 public class VacancyStatusCount {
     private String name;
-    private AppointmentStatus status;
+    private AppointmentType type;
     private Long count;
 }

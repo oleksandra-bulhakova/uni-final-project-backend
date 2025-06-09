@@ -33,6 +33,7 @@ public class ClientResponseMapper extends AbstractConverter<Client, ClientRespon
 
         if (address != null && !address.isEmpty() && address.getFirst() != null) {
             addressResponse = AddressResponse.builder()
+                    .id(address.getFirst().getId())
                     .country(address.getFirst().getCountry())
                     .city(address.getFirst().getCity())
                     .street(address.getFirst().getStreet())
