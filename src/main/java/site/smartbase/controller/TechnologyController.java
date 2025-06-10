@@ -20,8 +20,13 @@ public class TechnologyController {
     }
 
     @PutMapping("/{candidateId}")
-    public ResponseEntity<List<TechnologyDto>> updateTechnology(@PathVariable("candidateId") Long candidateId,
-                                                          @RequestBody List<TechnologyDto> technologies) {
+    public ResponseEntity<List<TechnologyDto>> updateTechnologyForCandidate(@PathVariable("candidateId") Long candidateId,
+                                                                            @RequestBody List<TechnologyDto> technologies) {
         return ResponseEntity.ok(technologyService.addTechnologiesToCandidate(technologies, candidateId));
+    }
+
+    @PutMapping("/vacancy/{vacancyId}")
+    public ResponseEntity<List<TechnologyDto>> updateTechnologyForVacancy(@PathVariable Long vacancyId, @RequestBody List<TechnologyDto> technologies) {
+        return ResponseEntity.ok(technologyService.addTechnologiesToVacancy(technologies, vacancyId));
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.smartbase.annotations.CurrentUserId;
 import site.smartbase.dto.VacancyDto;
+import site.smartbase.dto.VacancyEditDto;
 import site.smartbase.service.VacancyService;
 
 import java.util.List;
@@ -40,5 +41,31 @@ public class VacancyController {
     @GetMapping("/candidate/{candidateId}")
     public ResponseEntity<List<VacancyDto>> getVacanciesByCandidateId(@PathVariable Long candidateId) {
         return ResponseEntity.ok(vacancyService.getVacanciesForCandidate(candidateId));
+    }
+
+    @PutMapping("/status/{vacancyId}")
+    public ResponseEntity<VacancyDto> changeStatus(@PathVariable Long vacancyId, @RequestParam String vacancyStatus) {
+        return ResponseEntity.ok(vacancyService.changeVacancyStatus(vacancyId, vacancyStatus));
+    }
+
+    @PutMapping("/user/add/{vacancyId}/{userId}")
+    public ResponseEntity<VacancyDto> addUserToVacancy(@PathVariable Long vacancyId, @PathVariable Long userId) {
+        return ResponseEntity.ok(vacancyService.addRecruiterToVacancy(vacancyId, userId));
+    }
+
+    @PutMapping("/user/remove/{vacancyId}/{userId}")
+    public ResponseEntity<VacancyDto> removeFromVacancy(@PathVariable Long vacancyId, @PathVariable Long userId) {
+        return ResponseEntity.ok(vacancyService.removeRecruiterFromVacancy(vacancyId, userId));
+    }
+
+    @PutMapping("/{vacancyId}")
+    public ResponseEntity<VacancyDto> updateVacancy(@PathVariable Long vacancyId, @RequestBody VacancyEditDto vacancyEditDto) {
+        return ResponseEntity.ok(vacancyService.updateVacancy(vacancyId, vacancyEditDto));
+    }
+
+    @DeleteMapping("/{vacancyId}")
+    public ResponseEntity<Void> deleteVacancy(@PathVariable Long vacancyId) {
+        vacancyService.deleteVacancy(vacancyId);
+        return ResponseEntity.noContent().build();
     }
 }

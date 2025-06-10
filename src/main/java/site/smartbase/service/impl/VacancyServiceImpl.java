@@ -7,10 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 import site.smartbase.dto.ClientResponse;
 import site.smartbase.dto.UserResponse;
 import site.smartbase.dto.VacancyDto;
+import site.smartbase.dto.VacancyEditDto;
 import site.smartbase.entity.Client;
 import site.smartbase.entity.Company;
 import site.smartbase.entity.User;
 import site.smartbase.entity.Vacancy;
+import site.smartbase.enums.UserRole;
+import site.smartbase.enums.VacancyStatus;
+import site.smartbase.exception.NoAccessException;
 import site.smartbase.exception.NotFoundException;
 import site.smartbase.repository.ClientRepo;
 import site.smartbase.repository.CompanyRepo;
@@ -117,5 +121,58 @@ public class VacancyServiceImpl implements VacancyService {
             vacancyDtos = vacancies.stream().map(vacancy -> modelMapper.map(vacancy, VacancyDto.class)).toList();
         }
         return vacancyDtos;
+    }
+
+    @Transactional
+    @Override
+    public VacancyDto changeVacancyStatus(Long vacancyId, String status) {
+        Vacancy vacancy = vacancyRepo.findById(vacancyId).orElseThrow(() -> new NotFoundException("Vacancy not found"));
+        vacancy.setStatus(VacancyStatus.valueOf(status));
+        return modelMapper.map(vacancy, VacancyDto.class);
+    }
+
+    @Transactional
+    @Override
+    public VacancyDto addRecruiterToVacancy(Long vacancyId, Long recruiterId) {
+        Vacancy vacancy = vacancyRepo.findById(vacancyId).orElseThrow(() -> new NotFoundException("Vacancy not found"));
+        User user = userRepo.findById(recruiterId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        if (!(user.getRole().equals(UserRole.RECRUITER) || user.getRole().equals(UserRole.OWNER))) {
+            throw new NoAccessException("This user can't be assigned to the vacancy");
+        }
+
+        vacancy.getUsers().add(user);
+        user.getVacancies().add(vacancy);
+
+        return modelMapper.map(vacancy, VacancyDto.class);
+    }
+
+    @Transactional
+    @Override
+    public VacancyDto removeRecruiterFromVacancy(Long vacancyId, Long recruiterId) {
+        Vacancy vacancy = vacancyRepo.findById(vacancyId).orElseThrow(() -> new NotFoundException("Vacancy not found"));
+        User user = userRepo.findById(recruiterId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        vacancy.getUsers().remove(user);
+        user.getVacancies().remove(vacancy);
+
+        return modelMapper.map(vacancy, VacancyDto.class);
+    }
+
+    @Transactional
+    @Override
+    public VacancyDto updateVacancy(Long vacancyId, VacancyEditDto vacancyEditDto) {
+        Vacancy vacancy = vacancyRepo.findById(vacancyId).orElseThrow(() -> new NotFoundException("Vacancy not found"));
+
+        vacancy.setName(vacancyEditDto.getName());
+        vacancy.setDescription(vacancyEditDto.getDescription());
+
+        return modelMapper.map(vacancy, VacancyDto.class);
+    }
+
+    @Transactional
+    @Override
+    public void deleteVacancy(Long vacancyId) {
+        vacancyRepo.deleteById(vacancyId);
     }
 }
