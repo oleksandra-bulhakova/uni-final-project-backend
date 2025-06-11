@@ -85,13 +85,16 @@ public class SecurityConfig {
                                 "/api/vacancies/status/{vacancyId}",
                                 "/api/vacancies/user/add/{vacancyId}/{userId}",
                                 "/api/vacancies/user/remove/{vacancyId}/{userId}",
-                                "/api/vacancies/{vacancyId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/vacancies/{vacancyId}",
+                                "/api/comments/{commentId}",
+                                "/api/vacancies/client/{vacancyId}/{clientId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.DELETE,
                                 "/api/address/{addressId}",
                                 "/api/contact/{contactId}",
                                 "/api/candidates/{candidateId}",
                                 "/api/clients/{clientId}",
-                                "/api/vacancies/{vacancyId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/vacancies/{vacancyId}",
+                                "/api/comments/{commentId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/users/status/{userId}").hasAnyRole(String.valueOf(UserRole.OWNER))
                         .anyRequest().authenticated()

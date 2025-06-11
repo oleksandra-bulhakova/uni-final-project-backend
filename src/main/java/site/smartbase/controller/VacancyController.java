@@ -68,4 +68,9 @@ public class VacancyController {
         vacancyService.deleteVacancy(vacancyId);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/client/{vacancyId}/{clientId}")
+    public ResponseEntity<VacancyDto> changeClient(@PathVariable Long vacancyId, @PathVariable Long clientId) {
+        return ResponseEntity.ok(vacancyService.changeClient(vacancyId, clientId));
+    }
 }

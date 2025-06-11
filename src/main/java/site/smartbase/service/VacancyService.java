@@ -32,4 +32,7 @@ public interface VacancyService {
 
     @Transactional
     void deleteVacancy(Long vacancyId);
+
+    @Transactional
+    VacancyDto changeClient(Long vacancyId, Long clientId);
 }

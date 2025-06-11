@@ -175,4 +175,14 @@ public class VacancyServiceImpl implements VacancyService {
     public void deleteVacancy(Long vacancyId) {
         vacancyRepo.deleteById(vacancyId);
     }
+
+    @Transactional
+    @Override
+    public VacancyDto changeClient(Long vacancyId, Long clientId) {
+        Vacancy vacancy = vacancyRepo.findById(vacancyId).orElseThrow(() -> new NotFoundException("Vacancy not found"));
+        Client client = clientRepo.findById(clientId).orElseThrow(() -> new NotFoundException("Client not found"));
+
+        vacancy.setClient(client);
+        return modelMapper.map(vacancy, VacancyDto.class);
+    }
 }
