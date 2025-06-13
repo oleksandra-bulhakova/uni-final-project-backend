@@ -61,7 +61,8 @@ public class SecurityConfig {
                                 "/api/candidates",
                                 "/api/candidates/{candidateId}",
                                 "/api/candidates/appointment/{candidateId}",
-                                "/api/vacancies/candidate/{candidateId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/vacancies/candidate/{candidateId}",
+                                "/api/users/status").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.POST,
                                 "/api/files/upload",
                                 "/api/clients",
@@ -87,14 +88,18 @@ public class SecurityConfig {
                                 "/api/vacancies/user/remove/{vacancyId}/{userId}",
                                 "/api/vacancies/{vacancyId}",
                                 "/api/comments/{commentId}",
-                                "/api/vacancies/client/{vacancyId}/{clientId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/vacancies/client/{vacancyId}/{clientId}",
+                                "/api/candidates/appointment/{appointmentId}/{candidateId}/{vacancyId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.DELETE,
                                 "/api/address/{addressId}",
                                 "/api/contact/{contactId}",
                                 "/api/candidates/{candidateId}",
                                 "/api/clients/{clientId}",
                                 "/api/vacancies/{vacancyId}",
-                                "/api/comments/{commentId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/comments/{commentId}",
+                                "/api/candidates/{candidateId}/{vacancyId}",
+                                "/api/attachments/{attachmentId}",
+                                "/api/candidates/appointment/{appointmentId}/{candidateId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/users/status/{userId}").hasAnyRole(String.valueOf(UserRole.OWNER))
                         .anyRequest().authenticated()

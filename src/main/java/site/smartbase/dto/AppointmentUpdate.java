@@ -11,13 +11,8 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AppointmentResponse {
-    private Long id;
-    private String type;
-    private String status;
+public class AppointmentUpdate {
+    private String appointmentType;
     private OffsetDateTime date;
-    private UserResponse user;
-    private CandidateResponse candidate;
-    private String vacancyName;
-    private Long vacancyId;
+    private String appointmentStatus;
 }

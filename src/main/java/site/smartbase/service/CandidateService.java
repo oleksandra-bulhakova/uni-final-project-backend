@@ -24,4 +24,7 @@ public interface CandidateService {
 
     @Transactional
     CandidateResponse addCommentToCandidate(Long currentUserId, Long candidateId, CommentRequest commentRequest);
+
+    @Transactional
+    void deleteCandidateFromVacancy(Long candidateId, Long vacancyId, Long currentUserId);
 }

@@ -66,4 +66,22 @@ public class CandidateController {
     public ResponseEntity<List<AppointmentResponse>> getAppointmentsForCandidate(@PathVariable Long candidateId) {
         return ResponseEntity.ok(appointmentService.getAllAppointmentsForCandidate(candidateId));
     }
+
+    @DeleteMapping("/{candidateId}/{vacancyId}")
+    public ResponseEntity<Void> deleteCandidateFromVacancy(@PathVariable Long candidateId, @PathVariable Long vacancyId, @CurrentUserId Long currentUserId) {
+        candidateService.deleteCandidateFromVacancy(candidateId, vacancyId, currentUserId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/appointment/{appointmentId}/{candidateId}/{vacancyId}")
+    public ResponseEntity<AppointmentResponse> updateAppointment(@PathVariable Long appointmentId, @PathVariable Long candidateId,
+                                                                 @PathVariable Long vacancyId, @CurrentUserId Long currentUserId, @RequestBody AppointmentUpdate appointmentUpdate) {
+        return ResponseEntity.ok(appointmentService.updateAppointment(appointmentUpdate, currentUserId, candidateId, vacancyId, appointmentId));
+    }
+
+    @DeleteMapping("/appointment/{appointmentId}/{candidateId}")
+    public ResponseEntity<Void> deleteAppointment(@PathVariable Long appointmentId, @CurrentUserId Long currentUserId, @PathVariable Long candidateId) {
+        appointmentService.deleteAppointment(appointmentId, currentUserId, candidateId);
+        return ResponseEntity.ok().build();
+    }
 }

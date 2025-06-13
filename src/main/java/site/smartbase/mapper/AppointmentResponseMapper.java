@@ -29,6 +29,7 @@ public class AppointmentResponseMapper extends AbstractConverter<Appointment, Ap
                 .user(userResponse)
                 .candidate(candidateResponse)
                 .vacancyName(appointment.getVacancy().getName())
+                .vacancyId(appointment.getVacancy().getId())
                 .build();
     }
 }

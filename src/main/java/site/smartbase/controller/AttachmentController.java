@@ -19,4 +19,10 @@ public class AttachmentController {
                                                        @RequestParam("file") MultipartFile file) {
         return ResponseEntity.status(HttpStatus.CREATED).body(attachmentService.addAttachment(file, candidateId));
     }
+
+    @DeleteMapping("/{attachmentId}")
+    public ResponseEntity<Void> deleteAttachment(@PathVariable Long attachmentId) {
+        attachmentService.deleteAttachment(attachmentId);
+        return ResponseEntity.noContent().build();
+    }
 }

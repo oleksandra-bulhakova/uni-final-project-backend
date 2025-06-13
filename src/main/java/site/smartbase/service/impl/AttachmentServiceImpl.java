@@ -3,6 +3,7 @@ package site.smartbase.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import site.smartbase.dto.AttachmentDto;
 import site.smartbase.entity.Attachment;
@@ -22,6 +23,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     private final CandidateRepo candidateRepo;
 
     @Override
+    @Transactional
     public AttachmentDto addAttachment(MultipartFile file, Long candidateId) {
         Candidate candidate = candidateRepo.findById(candidateId).orElseThrow(() -> new NotFoundException("Candidate not found"));
         String address = azureBlobService.uploadFile(file);
@@ -29,5 +31,11 @@ public class AttachmentServiceImpl implements AttachmentService {
         attachment.setCandidate(candidate);
         attachment.setAttachmentPath(address);
         return modelMapper.map(attachmentRepo.save(attachment), AttachmentDto.class);
+    }
+
+    @Transactional
+    @Override
+    public void deleteAttachment(Long attachmentId) {
+        attachmentRepo.deleteById(attachmentId);
     }
 }

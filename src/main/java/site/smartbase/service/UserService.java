@@ -19,4 +19,6 @@ public interface UserService {
 
     @Transactional
     void setStatus(Long userId, Boolean status);
+
+    List<UserResponse> getUsersByActive(Long companyId, boolean active);
 }

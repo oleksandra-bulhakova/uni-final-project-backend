@@ -45,4 +45,9 @@ public class UserController {
         userService.setStatus(userId, status);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/status")
+    public ResponseEntity<List<UserResponse>> getByActive(@RequestParam Boolean active, @CurrentUserId Long currentUserId) {
+        return ResponseEntity.ok(userService.getUsersByActive(currentUserId, active));
+    }
 }

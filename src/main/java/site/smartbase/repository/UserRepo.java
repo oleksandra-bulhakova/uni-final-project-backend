@@ -12,4 +12,6 @@ public interface UserRepo extends JpaRepository<User, Long> {
     Optional<User> findByToken(String token);
 
     List<User> findByCompany_id(Long companyId);
+
+    List<User> findAllByActiveAndCompany_id(boolean active, Long companyId);
 }

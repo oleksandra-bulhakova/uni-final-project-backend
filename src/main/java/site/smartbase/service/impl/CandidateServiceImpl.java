@@ -128,7 +128,6 @@ public class CandidateServiceImpl implements CandidateService {
         User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
 
         vacancy.getCandidates().add(candidate);
-        vacancy.getUsers().add(user);
 
         candidate.getVacancies().add(vacancy);
 
@@ -160,5 +159,24 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.getComments().add(comment);
 
         return modelMapper.map(comment, CandidateResponse.class);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCandidateFromVacancy(Long candidateId, Long vacancyId, Long currentUserId) {
+        Vacancy vacancy = vacancyRepo.findById(vacancyId).orElseThrow(() -> new NotFoundException("Vacancy not found with id: " + vacancyId));
+        Candidate candidate = candidateRepo.findById(candidateId).orElseThrow(() -> new NotFoundException("Candidate not found"));
+        User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        vacancy.getCandidates().remove(candidate);
+
+        candidate.getVacancies().remove(vacancy);
+
+        Comment comment = new Comment();
+        comment.setDate(LocalDate.now());
+        comment.setAddressee(candidate);
+        comment.setAuthor(user);
+        comment.setDescription("Кандидата видалено з вакансії " + vacancy.getName());
+        commentRepo.save(comment);
     }
 }

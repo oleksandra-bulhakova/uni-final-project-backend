@@ -73,4 +73,12 @@ public class UserServiceImpl implements UserService {
 
         user.setActive(status);
     }
+
+    @Override
+    public List<UserResponse> getUsersByActive(Long currentUserId, boolean active) {
+        User currentUser = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+        companyRepo.findById(currentUser.getCompany().getId()).orElseThrow(() -> new NotFoundException("Company not found"));
+        List<User> users = userRepo.findAllByActiveAndCompany_id(active, currentUser.getCompany().getId());
+        return users.stream().map(user -> modelMapper.map(user, UserResponse.class)).toList();
+    }
 }
