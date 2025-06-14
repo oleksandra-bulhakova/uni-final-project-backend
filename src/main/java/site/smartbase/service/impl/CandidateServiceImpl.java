@@ -179,4 +179,24 @@ public class CandidateServiceImpl implements CandidateService {
         comment.setDescription("Кандидата видалено з вакансії " + vacancy.getName());
         commentRepo.save(comment);
     }
+
+    @Override
+    public List<CandidateResponse> searchCandidatesByName(String name, Long currentUserId) {
+        User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+        Company company = companyRepo.findById(user.getCompany().getId()).orElseThrow(() -> new NotFoundException("Company not found"));
+
+        List<Candidate> candidates = candidateRepo.searchCandidateByName(name, company.getId());
+
+        return candidates.stream().map(candidate -> modelMapper.map(candidate, CandidateResponse.class)).toList();
+    }
+
+    @Override
+    public List<CandidateResponse> searchCandidatesByTechnologies(List<Long> technologiesIds, Long currentUserId) {
+        User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+        Company company = companyRepo.findById(user.getCompany().getId()).orElseThrow(() -> new NotFoundException("Company not found"));
+
+        List<Candidate> candidates = candidateRepo.searchCandidateByTechnologies(company.getId(), technologiesIds, (long) technologiesIds.size());
+
+        return candidates.stream().map(candidate -> modelMapper.map(candidate, CandidateResponse.class)).toList();
+    }
 }

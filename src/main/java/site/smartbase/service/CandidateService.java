@@ -27,4 +27,8 @@ public interface CandidateService {
 
     @Transactional
     void deleteCandidateFromVacancy(Long candidateId, Long vacancyId, Long currentUserId);
+
+    List<CandidateResponse> searchCandidatesByName(String name, Long currentUserId);
+
+    List<CandidateResponse> searchCandidatesByTechnologies(List<Long> technologiesIds, Long currentUserId);
 }

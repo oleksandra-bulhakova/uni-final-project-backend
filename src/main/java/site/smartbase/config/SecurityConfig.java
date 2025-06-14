@@ -62,7 +62,8 @@ public class SecurityConfig {
                                 "/api/candidates/{candidateId}",
                                 "/api/candidates/appointment/{candidateId}",
                                 "/api/vacancies/candidate/{candidateId}",
-                                "/api/users/status").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/users/status",
+                                "/api/candidates/search").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.POST,
                                 "/api/files/upload",
                                 "/api/clients",
@@ -70,7 +71,8 @@ public class SecurityConfig {
                                 "/api/address",
                                 "/api/candidates",
                                 "/api/attachments/{candidateId}",
-                                "/api/contact/{ownerId}").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/contact/{ownerId}",
+                                "/api/candidates/search/technologies").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/users/set-image-path/{userId}",
                                 "/api/technologies/{candidateId}",

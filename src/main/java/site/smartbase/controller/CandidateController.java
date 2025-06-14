@@ -84,4 +84,14 @@ public class CandidateController {
         appointmentService.deleteAppointment(appointmentId, currentUserId, candidateId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<CandidateResponse>> searchCandidatesByName(@RequestParam String name, @CurrentUserId Long currentUserId) {
+        return ResponseEntity.ok(candidateService.searchCandidatesByName(name, currentUserId));
+    }
+
+    @PostMapping("/search/technologies")
+    public ResponseEntity<List<CandidateResponse>> searchCandidatesByTechnologies(@RequestBody List<Long> technologiesIds, @CurrentUserId Long currentUserId) {
+        return ResponseEntity.ok(candidateService.searchCandidatesByTechnologies(technologiesIds, currentUserId));
+    }
 }
