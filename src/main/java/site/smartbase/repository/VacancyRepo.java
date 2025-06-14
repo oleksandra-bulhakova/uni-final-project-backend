@@ -2,6 +2,8 @@ package site.smartbase.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import site.smartbase.entity.Vacancy;
 
@@ -15,5 +17,6 @@ public interface VacancyRepo extends JpaRepository<Vacancy, Long> {
 
     List<Vacancy> findAllByCompany_Id(Long companyId);
 
-    List<Vacancy> findByCandidates_Id(Long candidateId);
+    @Query("SELECT vc.vacancy FROM VacancyCandidate vc WHERE vc.candidate.id = :candidateId")
+    List<Vacancy> findAllByCandidateId(@Param("candidateId") Long candidateId);
 }

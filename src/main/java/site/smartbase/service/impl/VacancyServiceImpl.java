@@ -115,7 +115,7 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public List<VacancyDto> getVacanciesForCandidate(Long candidateId) {
-        List<Vacancy> vacancies = vacancyRepo.findByCandidates_Id(candidateId);
+        List<Vacancy> vacancies = vacancyRepo.findAllByCandidateId(candidateId);
         List<VacancyDto> vacancyDtos = new ArrayList<>();
         if (vacancies != null) {
             vacancyDtos = vacancies.stream().map(vacancy -> modelMapper.map(vacancy, VacancyDto.class)).toList();

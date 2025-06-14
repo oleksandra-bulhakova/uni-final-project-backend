@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.smartbase.dto.*;
 import site.smartbase.entity.*;
+import site.smartbase.entity.embeddedId.VacancyCandidateId;
+import site.smartbase.enums.AppointmentType;
 import site.smartbase.enums.ContactType;
 import site.smartbase.enums.OwnableType;
 import site.smartbase.exception.NotFoundException;
@@ -13,6 +15,9 @@ import site.smartbase.repository.*;
 import site.smartbase.service.CandidateService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +31,8 @@ public class CandidateServiceImpl implements CandidateService {
     private final UserRepo userRepo;
     private final VacancyRepo vacancyRepo;
     private final CommentRepo commentRepo;
+    private final VacancyCandidateRepo vacancyCandidateRepo;
+    private final AppointmentRepo appointmentRepo;
 
     @Transactional
     @Override
@@ -127,11 +134,19 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = candidateRepo.findById(candidateId).orElseThrow(() -> new NotFoundException("Candidate not found"));
         User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
 
-        vacancy.getCandidates().add(candidate);
+        VacancyCandidate vacancyCandidate = new VacancyCandidate();
 
-        candidate.getVacancies().add(vacancy);
+        VacancyCandidateId id = new VacancyCandidateId();
+        id.setCandidateId(candidateId);
+        id.setVacancyId(vacancyId);
+        vacancyCandidate.setId(id);
 
-        vacancyRepo.save(vacancy);
+        vacancyCandidate.setCandidate(candidate);
+        vacancyCandidate.setVacancy(vacancy);
+        vacancyCandidate.setAddedBy(user);
+        vacancyCandidate.setDateAdded(LocalDateTime.now());
+
+        vacancyCandidateRepo.save(vacancyCandidate);
 
         Comment comment = new Comment();
         comment.setDate(LocalDate.now());
@@ -168,9 +183,11 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = candidateRepo.findById(candidateId).orElseThrow(() -> new NotFoundException("Candidate not found"));
         User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
 
-        vacancy.getCandidates().remove(candidate);
+        VacancyCandidateId id = new VacancyCandidateId();
+        id.setCandidateId(candidateId);
+        id.setVacancyId(vacancyId);
 
-        candidate.getVacancies().remove(vacancy);
+        vacancyCandidateRepo.deleteById(id);
 
         Comment comment = new Comment();
         comment.setDate(LocalDate.now());
@@ -198,5 +215,28 @@ public class CandidateServiceImpl implements CandidateService {
         List<Candidate> candidates = candidateRepo.searchCandidateByTechnologies(company.getId(), technologiesIds, (long) technologiesIds.size());
 
         return candidates.stream().map(candidate -> modelMapper.map(candidate, CandidateResponse.class)).toList();
+    }
+
+    @Override
+    public List<GeneralStatistic> generateReport(Long currentUserId, LocalDateTime start, LocalDateTime end) {
+        User currentUser = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+        List<User> users = userRepo.findByCompany_id(currentUser.getCompany().getId());
+
+        List<Long> userIds = users.stream().map(User::getId).toList();
+
+        List<GeneralStatistic> statistics = vacancyCandidateRepo.countByUsersBetweenDates(userIds, start, end);
+
+        OffsetDateTime startOffset = start.atOffset(ZoneOffset.UTC);
+        OffsetDateTime endOffset = end.atOffset(ZoneOffset.UTC);
+
+        for (GeneralStatistic stats : statistics) {
+            stats.setPreScreens(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.PRESCREEN));
+            stats.setEnglishCheck(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.ENGLISH_CHECK));
+            stats.setInterviews(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.INTERVIEW));
+            stats.setOffers(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.OFFER));
+            stats.setHires(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.HIRING));
+        }
+
+        return statistics;
     }
 }

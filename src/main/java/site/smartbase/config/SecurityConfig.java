@@ -63,7 +63,8 @@ public class SecurityConfig {
                                 "/api/candidates/appointment/{candidateId}",
                                 "/api/vacancies/candidate/{candidateId}",
                                 "/api/users/status",
-                                "/api/candidates/search").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
+                                "/api/candidates/search",
+                                "/api/candidates/report").hasAnyRole(String.valueOf(UserRole.OWNER), String.valueOf(UserRole.RECRUITER), String.valueOf(UserRole.HIRING_MANAGER))
                         .requestMatchers(HttpMethod.POST,
                                 "/api/files/upload",
                                 "/api/clients",

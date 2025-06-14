@@ -14,10 +14,18 @@ public class GeneralStatistic {
     private String firstName;
     private String lastName;
     private String imagePath;
-    private Integer added;
-    private Integer preScreens;
-    private Integer englishCheck;
-    private Integer interviews;
-    private Integer offers;
-    private Integer offersAccepted;
+    private Long added;
+    private Long preScreens;
+    private Long englishCheck;
+    private Long interviews;
+    private Long offers;
+    private Long hires;
+
+    public GeneralStatistic(Long userId, String firstName, String lastName, String imagePath, Long added) {
+        this.userId = userId;
+        this.added = added;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.imagePath = imagePath;
+    }
 }

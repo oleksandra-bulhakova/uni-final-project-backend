@@ -50,11 +50,6 @@ public class Candidate {
     )
     private List<Technology> technologies;
 
-    @ManyToMany
-    @JoinTable(
-            name = "vacancy_candidate",
-            joinColumns = @JoinColumn(name = "candidate_id"),
-            inverseJoinColumns = @JoinColumn(name = "vacancy_id")
-    )
-    private List<Vacancy> vacancies;
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VacancyCandidate> vacancyCandidates;
 }

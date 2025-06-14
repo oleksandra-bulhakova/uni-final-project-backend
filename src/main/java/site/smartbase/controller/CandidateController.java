@@ -9,6 +9,7 @@ import site.smartbase.dto.*;
 import site.smartbase.service.AppointmentService;
 import site.smartbase.service.CandidateService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -93,5 +94,10 @@ public class CandidateController {
     @PostMapping("/search/technologies")
     public ResponseEntity<List<CandidateResponse>> searchCandidatesByTechnologies(@RequestBody List<Long> technologiesIds, @CurrentUserId Long currentUserId) {
         return ResponseEntity.ok(candidateService.searchCandidatesByTechnologies(technologiesIds, currentUserId));
+    }
+
+    @GetMapping("/report")
+    public ResponseEntity<List<GeneralStatistic>> generateReport(@CurrentUserId Long currentUserId, @RequestParam LocalDateTime start, @RequestParam LocalDateTime end) {
+        return ResponseEntity.ok(candidateService.generateReport(currentUserId, start, end));
     }
 }

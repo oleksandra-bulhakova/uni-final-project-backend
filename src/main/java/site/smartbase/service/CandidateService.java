@@ -3,6 +3,7 @@ package site.smartbase.service;
 import org.springframework.transaction.annotation.Transactional;
 import site.smartbase.dto.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CandidateService {
@@ -31,4 +32,6 @@ public interface CandidateService {
     List<CandidateResponse> searchCandidatesByName(String name, Long currentUserId);
 
     List<CandidateResponse> searchCandidatesByTechnologies(List<Long> technologiesIds, Long currentUserId);
+
+    List<GeneralStatistic> generateReport(Long currentUserId, LocalDateTime start, LocalDateTime end);
 }

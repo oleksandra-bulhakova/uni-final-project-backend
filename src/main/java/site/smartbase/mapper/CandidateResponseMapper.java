@@ -50,7 +50,7 @@ public class CandidateResponseMapper extends AbstractConverter<Candidate, Candid
                     .toList();
         }
 
-        List<Vacancy> vacancies = vacancyRepo.findByCandidates_Id(candidate.getId());
+        List<Vacancy> vacancies = vacancyRepo.findAllByCandidateId(candidate.getId());
         List<VacancyListResponse> vacancyListResponses = null;
 
         if (vacancies != null) {

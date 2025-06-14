@@ -34,8 +34,8 @@ public class Vacancy {
     @ManyToMany(mappedBy = "vacancies")
     private List<User> users;
 
-    @ManyToMany(mappedBy = "vacancies")
-    private List<Candidate> candidates;
+    @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VacancyCandidate> vacancyCandidates;
 
     @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Appointment> appointments;

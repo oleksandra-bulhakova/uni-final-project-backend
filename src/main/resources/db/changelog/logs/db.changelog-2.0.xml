@@ -31,4 +31,19 @@
                         columnName="date"
                         newDataType="JAVA.SQL.TYPES.TIMESTAMP_WITH_TIMEZONE"/>
     </changeSet>
+
+    <changeSet id="19" author="Oleksandra Bulhakova">
+        <addColumn tableName="vacancy_candidate">
+            <column name="added_by" type="BIGINT"/>
+            <column name="date_added" type="TIMESTAMP"/>
+        </addColumn>
+
+        <addForeignKeyConstraint
+                baseTableName="vacancy_candidate"
+                baseColumnNames="added_by"
+                constraintName="fk_vacancy_candidate_added_by"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="SET NULL"/>
+    </changeSet>
 </databaseChangeLog>
