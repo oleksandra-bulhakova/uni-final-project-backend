@@ -11,7 +11,7 @@ import site.smartbase.entity.Company;
 import site.smartbase.entity.Contact;
 import site.smartbase.enums.ContactType;
 import site.smartbase.enums.OwnableType;
-import site.smartbase.exception.AlreadyExists;
+import site.smartbase.exception.AlreadyExistsException;
 import site.smartbase.exception.NotFoundException;
 import site.smartbase.repository.ClientRepo;
 import site.smartbase.repository.CompanyRepo;
@@ -35,7 +35,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public ClientResponse addClient(Long currentUserId, ClientRequest clientRequest) {
         if (contactRepo.findByContactAndOwnableTypeAndContactType(clientRequest.getEmail(), OwnableType.CLIENT, ContactType.MAIN_EMAIL).isPresent()) {
-            throw new AlreadyExists("Client already exists");
+            throw new AlreadyExistsException("Client already exists");
         }
 
         Company company = companyRepo.findById(userRepo.findById(currentUserId)

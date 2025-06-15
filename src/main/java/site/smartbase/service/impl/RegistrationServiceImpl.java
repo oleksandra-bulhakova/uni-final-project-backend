@@ -116,7 +116,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public String confirmRegistration(String token) {
         User user = userRepo.findByToken(token)
-                .orElseThrow(() -> new NotValidToken("Invalid token"));
+                .orElseThrow(() -> new NotValidTokenException("Invalid token"));
 
         user.setActive(true);
         user.setToken(null);
@@ -162,7 +162,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public void finishRegistration(String token) {
         User user = userRepo.findByToken(token)
-                .orElseThrow(() -> new NotValidToken("Invalid token"));
+                .orElseThrow(() -> new NotValidTokenException("Invalid token"));
 
         user.setToken(null);
     }
@@ -196,7 +196,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public String confirmRegularUserRegistration(String token) {
         User user = userRepo.findByToken(token)
-                .orElseThrow(() -> new NotValidToken("Invalid token"));
+                .orElseThrow(() -> new NotValidTokenException("Invalid token"));
 
         user.setToken(null);
 
