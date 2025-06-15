@@ -94,7 +94,7 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public List<VacancyDto> getAllVacanciesForUser(Long currentUserId) {
-        User user = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+        userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
 
         List<Vacancy> vacancies = vacancyRepo.findByUsers_Id(currentUserId);
         List<VacancyDto> vacancyDtos = new ArrayList<>();
