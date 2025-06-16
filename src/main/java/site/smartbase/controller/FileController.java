@@ -16,7 +16,7 @@ public class FileController {
     private final AzureBlobService azureBlobService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         String imageUrl = azureBlobService.uploadFile(file);
         return ResponseEntity.ok(imageUrl);
     }
