@@ -31,7 +31,7 @@ public class AuthController {
     @GetMapping("/confirm")
     public RedirectView confirm(@RequestParam("token") String token) {
         registrationService.confirmRegistration(token);
-        return new RedirectView("http://localhost:3000/login");
+        return new RedirectView("http://localhost:3000/");
     }
 
     @PostMapping("/invite")
