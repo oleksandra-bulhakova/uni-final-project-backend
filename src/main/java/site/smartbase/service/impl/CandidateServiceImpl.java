@@ -18,8 +18,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -221,6 +222,8 @@ public class CandidateServiceImpl implements CandidateService {
     public List<GeneralStatistic> generateReport(Long currentUserId, LocalDateTime start, LocalDateTime end) {
         User currentUser = userRepo.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
         List<User> users = userRepo.findByCompany_id(currentUser.getCompany().getId());
+        Map<Long, User> userMap = users.stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
 
         List<Long> userIds = users.stream().map(User::getId).toList();
 
@@ -229,14 +232,30 @@ public class CandidateServiceImpl implements CandidateService {
         OffsetDateTime startOffset = start.atOffset(ZoneOffset.UTC);
         OffsetDateTime endOffset = end.atOffset(ZoneOffset.UTC);
 
-        for (GeneralStatistic stats : statistics) {
-            stats.setPreScreens(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.PRESCREEN));
-            stats.setEnglishCheck(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.ENGLISH_CHECK));
-            stats.setInterviews(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.INTERVIEW));
-            stats.setOffers(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.OFFER));
-            stats.setHires(appointmentRepo.countByTypeAndDateForHost(stats.getUserId(), startOffset, endOffset, AppointmentType.HIRING));
+        List<Long> activeFromAppointments = userRepo.findUserIdsWithAppointmentsBetweenDates(userIds, startOffset, endOffset);
+
+        Set<Long> activeUserIds = new HashSet<>(statistics.stream().map(GeneralStatistic::getUserId).toList());
+        activeUserIds.addAll(activeFromAppointments);
+
+        Map<Long, GeneralStatistic> statsMap = statistics.stream()
+                .collect(Collectors.toMap(GeneralStatistic::getUserId, Function.identity()));
+
+        for (Long userId : activeUserIds) {
+            GeneralStatistic stat = statsMap.get(userId);
+
+            if (stat == null) {
+                User user = userMap.get(userId);
+                stat = new GeneralStatistic(user.getId(), user.getFirstName(), user.getLastName(), user.getImagePath(), 0L);
+                statsMap.put(userId, stat);
+            }
+
+            stat.setPreScreens(appointmentRepo.countByTypeAndDateForHost(stat.getUserId(), startOffset, endOffset, AppointmentType.PRESCREEN));
+            stat.setEnglishCheck(appointmentRepo.countByTypeAndDateForHost(stat.getUserId(), startOffset, endOffset, AppointmentType.ENGLISH_CHECK));
+            stat.setInterviews(appointmentRepo.countByTypeAndDateForHost(stat.getUserId(), startOffset, endOffset, AppointmentType.INTERVIEW));
+            stat.setOffers(appointmentRepo.countByTypeAndDateForHost(stat.getUserId(), startOffset, endOffset, AppointmentType.OFFER));
+            stat.setHires(appointmentRepo.countByTypeAndDateForHost(stat.getUserId(), startOffset, endOffset, AppointmentType.HIRING));
         }
 
-        return statistics;
+        return new ArrayList<>(statsMap.values());
     }
 }
