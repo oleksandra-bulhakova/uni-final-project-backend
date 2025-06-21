@@ -46,4 +46,10 @@
                 referencedColumnNames="id"
                 onDelete="SET NULL"/>
     </changeSet>
+    <changeSet id="20" author="Oleksandra Bulhakova">
+        <modifyDataType
+                tableName="vacancies"
+                columnName="description"
+                newDataType="TEXT"/>
+    </changeSet>
 </databaseChangeLog>
